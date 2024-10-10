@@ -1,0 +1,80 @@
+class _EditProfileScreenState extends State<EditProfileScreen> {
+  File? _imageFile; // Variable to store the picked image file
+
+  // ... existing code ...
+
+  Future<void> _pickImage(ImageSource source) async {
+    final pickedFile = await ImagePicker().getImage(source: source);
+
+    if (pickedFile != null) {
+      setState(() {
+        _imageFile = File(pickedFile.path);
+      });
+    }
+  }
+
+  // ... existing code ...
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      // ... existing code ...
+
+      Image.asset(
+        "assets/images/Frame_2.png",
+        height: 98,
+        width: 98,
+      ),
+
+      GestureDetector(
+        onTap: () {
+          _showImagePicker(context);
+        },
+        child: _imageFile == null
+            ? Image.asset(
+                "assets/images/Frame_2.png",
+                height: 98,
+                width: 98,
+              )
+            : Image.file(
+                _imageFile!,
+                height: 98,
+                width: 98,
+              ),
+      ),
+
+      // ... existing code ...
+    );
+  }
+
+  void _showImagePicker(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return SafeArea(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ListTile(
+                leading: Icon(Icons.photo_library),
+                title: Text('Choose from gallery'),
+                onTap: () {
+                  _pickImage(ImageSource.gallery);
+                  Navigator.pop(context);
+                },
+              ),
+              ListTile(
+                leading: Icon(Icons.camera_alt),
+                title: Text('Take a photo'),
+                onTap: () {
+                  _pickImage(ImageSource.camera);
+                  Navigator.pop(context);
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+}

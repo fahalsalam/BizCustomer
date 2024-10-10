@@ -1,0 +1,265 @@
+Expanded(
+  child: GridView.builder(
+    shrinkWrap: true,
+    controller: _scrollController,
+    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+      crossAxisCount: 2,
+      crossAxisSpacing: 3.0,
+      mainAxisSpacing: 3.0,
+      childAspectRatio: 3 / 2,
+    ),
+    itemCount: vendorsList.length + (isLoadingMore ? 1 : 0),
+    itemBuilder: (context, index) {
+      if (index < vendorsList.length) {
+        return Padding(
+          padding: const EdgeInsets.all(2.0),
+          child: GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                PageTransition(
+                  type: PageTransitionType.rightToLeft,
+                  child: WalletStoreDetails(
+                    vendor: vendorsList[index],
+                  ),
+                ),
+              );
+            },
+            child: Container(
+              margin: const EdgeInsets.only(left: 2, right: 2),
+              height: 50,
+              width: 122,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                image: vendorsList[index].vendorBusinessPicUrl1 == "null"
+                    ? const DecorationImage(
+                        image:
+                            AssetImage("assets/images/store.jpg"),
+                        fit: BoxFit.fill,
+                      )
+                    : DecorationImage(
+                        image: NetworkImage(
+                            vendorsList[index]
+                                .vendorBusinessPicUrl1),
+                        fit: BoxFit.fill,
+                      ),
+              ),
+              child: Stack(
+                fit: StackFit.expand,
+                children: [
+                  Positioned.fill(
+                    child: DecoratedBox(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        image: const DecorationImage(
+                          image: AssetImage(
+                              "assets/images/shadow.png"),
+                          fit: BoxFit.fill,
+                        ),
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 10),
+                    child: Align(
+                      alignment: Alignment.bottomCenter,
+                      child: Text(
+                        vendorsList[index].vendorBusinessName,
+                        style: const TextStyle(
+                          fontSize: 12,
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      } else if (isLoadingMore) {
+        // Render a loading indicator
+        return Center(child: CircularProgressIndicator());
+      } else if (vendorsList.isEmpty) {
+        // Render a message when there are no vendors
+        return Center(
+          child: Text(
+            "No Stores available",
+            style: TextStyle(color: Colors.black),
+          ),
+        );
+      } else {
+        // Render a message when there are no more vendors
+        return Center(
+          child: Text(
+            "No more vendors",
+            style: TextStyle(color: Colors.black),
+          ),
+        );
+      }
+    },
+  ),
+),
+CurvedNavigationBar(
+  height: 60,
+  color: Color.fromARGB(255, 212, 202, 202).withOpacity(0.5),
+  backgroundColor: Colors.transparent,
+  animationCurve: Curves.easeInOut,
+  animationDuration: Duration(milliseconds: 300),
+  index: index,
+  items: items.map((widget) {
+    return Container(
+      child: widget,
+      padding: EdgeInsets.all(5), // Adjust the padding as needed
+    );
+  }).toList(),
+  onTap: (int tappedIndex) {
+    setState(() {
+      index = tappedIndex;
+    });
+  },
+  decoration: BoxDecoration(
+    border: Border.all(
+      color: Colors.black, // Set your desired border color
+      width: 1.0, // Set the width of the border
+    ),
+    boxShadow: [
+      BoxShadow(
+        color: Colors.grey, // Set your desired shadow color
+        blurRadius: 5.0, // Set the blur radius
+        offset: Offset(0, 3), // Set the offset (0, 3) represents shadow positioned at the bottom
+      ),
+    ],
+  ),
+)
+Future<void> getApprovedVendorsByfilter(String token, String filterText) async {
+  // Replace 'YOUR_API_ENDPOINT' with the actual API endpoint for getApprovedVendorsbyClassification
+  final String apiUrl = 'YOUR_API_ENDPOINT';
+
+  // Prepare headers
+  final Map<String, String> headers = {
+    'Token': token,
+    'filtrText': filterText,
+    // Add other headers if needed
+  };
+
+  try {
+    final response = await http.get(Uri.parse(apiUrl), headers: headers);
+
+    if (response.statusCode == 200) {
+      // Handle successful response here
+      print('API call successful');
+      print('Response: ${response.body}');
+    } else {
+      // Handle error response here
+      print('API call failed with status code ${response.statusCode}');
+      print('Error response: ${response.body}');
+    }
+  } catch (error) {
+    // Handle network or other errors here
+    print('Error: $error');
+  }
+}
+
+// Example usage:
+// await getApprovedVendorsByClassification('your_token_value', 'your_filter_text');
+
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+
+Future<FilterVendorModel> getApprovedVendorsByfilter(String token, String filterText) async {
+  final String apiUrl = 'YOUR_API_ENDPOINT';
+
+  final Map<String, String> headers = {
+    'Token': token,
+    'filtrText': filterText,
+  };
+
+  try {
+    final response = await http.get(Uri.parse(apiUrl), headers: headers);
+
+    if (response.statusCode == 200) {
+      // Parse JSON response into FilterVendorModel
+      final Map<String, dynamic> jsonResponse = json.decode(response.body);
+      return FilterVendorModel.fromJson(jsonResponse);
+    } else {
+      throw Exception('API call failed with status code ${response.statusCode}');
+    }
+  } catch (error) {
+    throw Exception('Error: $error');
+  }
+}
+void fetchData() async {
+  try {
+    FilterVendorModel filterVendorModel = await getApprovedVendorsByfilter('your_token_value', 'your_filter_text');
+    // Use filterVendorModel as needed
+    print('Total Records: ${filterVendorModel.totalRecords}');
+    print('Vendors: ${filterVendorModel.vendors}');
+  } catch (error) {
+    print('Error fetching data: $error');
+  }
+}
+class YourWidgetState extends State<YourWidget> {
+  // ... other code ...
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      // ... other code ...
+      body: TabBarView(
+        // ... other code ...
+        children: <Widget>[
+          // CategoryList(),
+          categoryList(),
+          storeList(),
+        ],
+      ),
+    );
+  }
+
+  // Add this function to handle the search and API call
+  void onSearchTextChanged(String value) {
+    // Assuming that 'storeList' is the list to filter
+    var filteredStores = masterStoreList
+        .where((store) => store.name.toLowerCase().contains(value.toLowerCase()))
+        .toList();
+
+    // Update the store list when the search text changes
+    setState(() {
+      _searchQuery = value;
+      filteredStoresList = filteredStores;
+    });
+
+    // Make the API call with the search text
+    getStoreList(context, reset: true, pageNo: 1, pageCount: 20, filterText: value);
+  }
+
+  Future<http.Response> getStoreList(BuildContext context,
+      {bool reset = false, int pageNo = 1, int pageCount = 20, String filterText = ''}) async {
+    try {
+      if (reset) {
+        // Reset your store lists as needed
+        // storesList.clear();
+        // filteredStoresList.clear();
+        // masterStoreList.clear();
+      }
+
+      // Rest of your API call code...
+
+      final Map<String, String> headers = {
+        'Token': Constants().token,
+        'strPageno': pageNo.toString(),
+        'strPagecount': pageCount.toString(),
+        'filtrText': filterText, // Add filterText to the headers
+      };
+
+      // Rest of your API call code...
+    } catch (error) {
+      // Handle errors...
+    } finally {
+      // ... Rest of your code ...
+    }
+  }
+}

@@ -1,0 +1,30 @@
+{
+   "project_info": {
+     "project_number": "700625783302",
+     "project_id": "bizatom-87e3f",
+     "storage_bucket": "bizatom-87e3f.appspot.com"
+   },
+  
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:700625783302:android:a33050d99922f78fb55187",
+        "android_client_info": {
+          "package_name": "com.example.Bizatom"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD-desxinxBG8TGD-ld5qOAB8t6IVNmugk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

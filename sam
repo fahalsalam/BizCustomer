@@ -1,0 +1,106 @@
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+
+Future<void> getFCMStatus(String requestId) async {
+  String apiUrl = 'https://marchandising.azurewebsites.net/fcm/2654/getFCMStatus';
+
+  Map<String, String> headers = {
+    'Content-Type': 'application/json',
+    'RequestId': requestId,
+    // Add other headers as needed
+  };
+
+  try {
+    final response = await http.get(
+      Uri.parse(apiUrl),
+      headers: headers,
+    );
+
+    if (response.statusCode == 200) {
+      // Parse the response
+      Map<String, dynamic> jsonResponse = json.decode(response.body);
+
+      // Check if the API call was successful
+      if (jsonResponse['isSuccess'] == true) {
+        String status = jsonResponse['data'];
+        print("FCM Status: $status");
+        // Handle the FCM status as needed
+      } else {
+        print("API call failed: ${jsonResponse['message']}");
+      }
+    } else {
+      print("API call failed with status: ${response.statusCode}");
+      print("Response body: ${response.body}");
+    }
+  } catch (error) {
+    print("Error during API call: $error");
+  }
+}
+
+// Example usage:
+void main() async {
+  // Replace 'yourRequestId' with the actual request ID
+  String requestId = 'yourRequestId';
+
+  await getFCMStatus(requestId);
+}
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+
+Future<void> getFCMStatus(int requestId) async {
+  String apiUrl = 'https://marchandising.azurewebsites.net/fcm/2654/getFCMStatus';
+
+  Map<String, String> headers = {
+    'Content-Type': 'application/json',
+    'RequestId': requestId.toString(),
+    // Add other headers as needed
+  };
+
+  // Function to poll the API and check the status
+  Future<void> pollApi() async {
+    try {
+      final response = await http.get(
+        Uri.parse(apiUrl),
+        headers: headers,
+      );
+
+      if (response.statusCode == 200) {
+        // Parse the response
+        Map<String, dynamic> jsonResponse = json.decode(response.body);
+
+        // Check if the API call was successful
+        if (jsonResponse['isSuccess'] == true) {
+          String status = jsonResponse['data'];
+          print("FCM Status: $status");
+
+          // Check if the status is "reject" or "approve"
+          if (status == "reject" || status == "approve") {
+            // Handle the final status as needed
+          } else {
+            // If status is still "pending", continue polling after a delay
+            await Future.delayed(Duration(seconds: 5)); // Adjust the delay as needed
+            await pollApi();
+          }
+        } else {
+          print("API call failed: ${jsonResponse['message']}");
+        }
+      } else {
+        print("API call failed with status: ${response.statusCode}");
+        print("Response body: ${response.body}");
+      }
+    } catch (error) {
+      print("Error during API call: $error");
+    }
+  }
+
+  // Start the initial API call
+  await pollApi();
+}
+
+// Example usage:
+void main() async {
+  // Replace 'yourRequestId' with the actual request ID
+  int requestId = yourRequestId;
+
+  await getFCMStatus(requestId);
+}

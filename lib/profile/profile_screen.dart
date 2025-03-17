@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -329,6 +330,60 @@ class ProfileScreenState extends State<ProfileScreen> {
                             ),
                           ),
                         ),
+                        // Spacer(),
+                        Padding(
+                          padding:
+                              EdgeInsets.only(left: 20, right: 20, top: 20),
+                          child: GestureDetector(
+                            onTap: () {
+                              _showDeleteConfirmation(context);
+                            },
+                            child: Row(
+                              mainAxisSize: MainAxisSize.max,
+                              children: [
+                                Expanded(
+                                  flex: 0,
+                                  child: Padding(
+                                    padding: EdgeInsets.only(left: 10),
+                                    child: Image.asset(
+                                      "assets/images/ic_profile_item_icon.png",
+                                      height: 24,
+                                      width: 24,
+                                    ),
+                                  ),
+                                ),
+                                const Expanded(
+                                  flex: 1,
+                                  child: Align(
+                                    alignment: Alignment.centerLeft,
+                                    child: Padding(
+                                      padding: EdgeInsets.only(
+                                          left: 15.0, right: 15),
+                                      child: Text(
+                                        "Delete Account",
+                                        style: TextStyle(
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.black),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                Expanded(
+                                  flex: 0,
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Image.asset(
+                                      "assets/images/ic_profile_arrow_forward.png",
+                                      height: 24,
+                                      width: 24,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
                         Spacer(),
                         Padding(
                           padding:
@@ -407,6 +462,64 @@ class ProfileScreenState extends State<ProfileScreen> {
     if (!await launchUrl(url, mode: LaunchMode.inAppWebView)) {
       throw Exception('Could not launch $url');
     }
+  }
+
+  Future<void> _deleteAccount() async {
+    try {
+      EasyLoading.show(
+          status: "Please Wait...", maskType: EasyLoadingMaskType.black);
+
+      final response = await http.put(
+        Uri.parse(Urls.postAccountDeactivate),
+        headers: {
+          'Token': Constants().token,
+          'customerID': SharedPrefrence().getCustomerId().toString(),
+        },
+      );
+
+      EasyLoading.dismiss();
+
+      if (response.statusCode == 200) {
+        Navigator.of(context).pushAndRemoveUntil(
+            MaterialPageRoute(builder: (context) => LoginScreen()),
+            (route) => false);
+      } else {
+        if (!context.mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Failed to delete account")),
+        );
+      }
+    } catch (e) {
+      EasyLoading.dismiss();
+    }
+  }
+
+  void _showDeleteConfirmation(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Confirm Deletion"),
+          content: Text(
+              "Are you sure you want to delete your account? This action cannot be undone."),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the dialog
+              },
+              child: Text("No"),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the dialog
+                _deleteAccount();
+              },
+              child: Text("Yes", style: TextStyle(color: Colors.red)),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   Future<dynamic> _handleNewVendorDialog() {

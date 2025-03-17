@@ -9,6 +9,7 @@ import 'package:flutter_phone_direct_caller/flutter_phone_direct_caller.dart';
 import 'package:provider/provider.dart';
 import 'package:reward_hub_customer/Utils/SharedPrefrence.dart';
 import 'package:reward_hub_customer/Utils/constants.dart';
+import 'package:reward_hub_customer/Utils/phone_dialer.dart';
 import 'package:reward_hub_customer/provider/user_data_provider.dart';
 import 'package:reward_hub_customer/store/model/search_vendor_details.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -219,15 +220,17 @@ class StoreDetailsState extends State<StoreDetails> {
               alignment: Alignment.centerRight,
               child: ElevatedButton.icon(
                 onPressed: () {
-                  _makePhoneCall(widget.storeList is Vendor
-                      ? widget.storeList.vendorRegisteredMobileNumber
-                              .toString() ??
-                          ""
-                      : (widget.storeList is filter.Vendor
+                  makePhoneCall(
+                      context,
+                      widget.storeList is Vendor
                           ? widget.storeList.vendorRegisteredMobileNumber
                                   .toString() ??
                               ""
-                          : ''));
+                          : (widget.storeList is filter.Vendor
+                              ? widget.storeList.vendorRegisteredMobileNumber
+                                      .toString() ??
+                                  ""
+                              : ''));
                 },
                 icon: Icon(
                   Icons.call,
@@ -428,10 +431,7 @@ class StoreDetailsState extends State<StoreDetails> {
     );
   }
 
-  Future<void> _makePhoneCall(String phoneNumber) async {
-    bool? res = await FlutterPhoneDirectCaller.callNumber(phoneNumber);
-    if (!res!) {
-      throw 'Could not launch $phoneNumber';
-    }
+  Future<void> makePhoneCall(BuildContext context, String phoneNumber) async {
+    await PhoneDialer.makeCall(context, phoneNumber);
   }
 }

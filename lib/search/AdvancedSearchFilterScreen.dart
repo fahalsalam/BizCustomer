@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -255,19 +256,21 @@ class _AdvancedSearchFilterScreenState
                   try {
                     final String token = Constants().token;
                     final String apiUrl = Urls.stores;
-
-                    final response = await http.get(
-                      Uri.parse(apiUrl),
-                      headers: {
+var header= {
                         'Token': token,
                         'pageNo': '1',
                         'pageSize': '10',
                         'districtId': selectedDistrictId ?? '',
                         'townID': selectedTownId ?? '',
                         'placeID': selectedPlaceId ?? '',
-                      },
+                      };
+                       log("req: ${header}");
+                    final response = await http.get(
+                      Uri.parse(apiUrl),
+                      headers:header
                     );
-
+                    
+                    log("response: ${response.statusCode},${response.body}");
                     if (response.statusCode == 200) {
                       final data = json.decode(response.body);
                       if (data['isSuccess']) {

@@ -3,7 +3,6 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flip_card/flip_card.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -72,8 +71,8 @@ class _WalletScreen2State extends State<WalletScreen2>
     //     print(value);
     //   }
     // });
-    getFcmToken();
-    _initializeFCMToken();
+    // getFcmToken();
+    // _initializeFCMToken();
     getCategoryList(context);
     // fetchUserDetails();
     fetchTransactions();
@@ -109,69 +108,69 @@ class _WalletScreen2State extends State<WalletScreen2>
   //        Provider.of<UserData>(context, listen: false).updateUserModel(user as UserModel);
   // }
 
-  Future<String> fcmtoken() async {
-    String token = await FirebaseMessaging.instance.getToken().toString();
-    return token;
-  }
+  // Future<String> fcmtoken() async {
+  //   String token = await FirebaseMessaging.instance.getToken().toString();
+  //   return token;
+  // }
 
-  Future<void> _initializeFCMToken() async {
-    try {
-      // Replace 'yourCustomerId', 'yourMobileNo', and 'yourToken' with actual values
-      String token = await fcmtoken();
-      log("FCM TOKEN:>>>$token" as num);
-      await updateFCMToken(
-        userModel!.customerID.toString(),
-        userModel!.mobileNumber.toString(),
-        token,
-      );
-    } catch (e) {
-      // Handle any errors during initialization
-      print('Error during FCM Token initialization: $e');
-    }
-  }
+  // Future<void> _initializeFCMToken() async {
+  //   try {
+  //     // Replace 'yourCustomerId', 'yourMobileNo', and 'yourToken' with actual values
+  //     String token = await fcmtoken();
+  //     log("FCM TOKEN:>>>$token" as num);
+  //     await updateFCMToken(
+  //       userModel!.customerID.toString(),
+  //       userModel!.mobileNumber.toString(),
+  //       token,
+  //     );
+  //   } catch (e) {
+  //     // Handle any errors during initialization
+  //     print('Error during FCM Token initialization: $e');
+  //   }
+  // }
 
-  Future<void> updateFCMToken(
-      String customerId, String mobileNo, String token) async {
-    final apiUrl =
-        'https://marchandising.azurewebsites.net/fcm/2654/postFCMTokenUpdate';
+  // Future<void> updateFCMToken(
+  //     String customerId, String mobileNo, String token) async {
+  //   final apiUrl =
+  //       'https://marchandising.azurewebsites.net/fcm/2654/postFCMTokenUpdate';
 
-    try {
-      // Prepare the headers
-      Map<String, String> headers = {
-        'Content-Type': 'application/json',
-        'CustomerID': customerId,
-        'MobileNo': mobileNo,
-        'Token': token,
-      };
+  //   try {
+  //     // Prepare the headers
+  //     Map<String, String> headers = {
+  //       'Content-Type': 'application/json',
+  //       'CustomerID': customerId,
+  //       'MobileNo': mobileNo,
+  //       'Token': token,
+  //     };
 
-      // Prepare the request body if needed
-      // Map<String, dynamic> requestBody = {
-      //   'key1': 'value1',
-      //   'key2': 'value2',
-      // };
+  //     // Prepare the request body if needed
+  //     // Map<String, dynamic> requestBody = {
+  //     //   'key1': 'value1',
+  //     //   'key2': 'value2',
+  //     // };
 
-      // Make the POST request
-      final response = await http.post(
-        Uri.parse(apiUrl),
-        headers: headers,
-        // body: jsonEncode(requestBody), // Uncomment this line if you have a request body
-      );
+  //     // Make the POST request
+  //     final response = await http.post(
+  //       Uri.parse(apiUrl),
+  //       headers: headers,
+  //       // body: jsonEncode(requestBody), // Uncomment this line if you have a request body
+  //     );
 
-      // Check the response status
-      if (response.statusCode == 200) {
-        // Request was successful, handle the response data if needed
-        print('FCM Token updated successfully');
-      } else {
-        // Request failed, handle the error
-        print(
-            'Failed to update FCM Token. Status code: ${response.statusCode}');
-        print('Response body: ${response.body}');
-      }
-    } catch (e) {
-      // Handle any exceptions
-      print('Error updating FCM Token: $e');
-    }
-  }
+  //     // Check the response status
+  //     if (response.statusCode == 200) {
+  //       // Request was successful, handle the response data if needed
+  //       print('FCM Token updated successfully');
+  //     } else {
+  //       // Request failed, handle the error
+  //       print(
+  //           'Failed to update FCM Token. Status code: ${response.statusCode}');
+  //       print('Response body: ${response.body}');
+  //     }
+  //   } catch (e) {
+  //     // Handle any exceptions
+  //     print('Error updating FCM Token: $e');
+  //   }
+  // }
 
   Future<void> fetchUserDetails() async {
     try {
@@ -444,21 +443,43 @@ class _WalletScreen2State extends State<WalletScreen2>
                                         ),
                                       ),
                                       Consumer<UserData>(
-                                          builder: (context, userData, _) {
-                                        return Padding(
-                                          padding: EdgeInsets.only(
-                                              bottom: 18.0.h, left: 6.w),
-                                          child: Text(
-                                              NumberFormat('#,##0.00').format(
-                                                  userData.userModel
-                                                      ?.walletbalance),
+                                        builder: (context, userData, _) {
+                                          final balance = userData
+                                                  .userModel?.walletbalance ??
+                                              0.0; // Default to 0.0
+                                          return Padding(
+                                            padding: EdgeInsets.only(
+                                                bottom: 18.0.h, left: 6.w),
+                                            child: Text(
+                                              NumberFormat('#,##0.00')
+                                                  .format(balance),
                                               style: TextStyle(
                                                 color: Colors.white,
                                                 fontSize: 16.sp,
                                                 fontWeight: FontWeight.w700,
-                                              )),
-                                        );
-                                      }),
+                                              ),
+                                            ),
+                                          );
+                                        },
+                                      ),
+
+                                      // Consumer<UserData>(
+                                      //     builder: (context, userData, _) {
+                                      //   return Padding(
+                                      //     padding: EdgeInsets.only(
+                                      //         bottom: 18.0.h, left: 6.w),
+                                      //     child: Text(
+                                      //       // error
+                                      //         NumberFormat('#,##0.00').format(
+                                      //             userData.userModel
+                                      //                 ?.walletbalance),
+                                      //         style: TextStyle(
+                                      //           color: Colors.white,
+                                      //           fontSize: 16.sp,
+                                      //           fontWeight: FontWeight.w700,
+                                      //         )),
+                                      //   );
+                                      // }),
                                     ],
                                   ),
                                 ),
@@ -887,173 +908,173 @@ class _WalletScreen2State extends State<WalletScreen2>
     }
   }
 
-  Future<void> getFcmToken() async {
-    if (kIsWeb) return;
-    var fcmToken = await FirebaseMessaging.instance.getToken();
-    FirebaseMessaging.instance.getInitialMessage().then((event) {
-      if (event != null) {
-        print("geetInitialMessage ${event.data}");
-      }
-    });
+  // Future<void> getFcmToken() async {
+  //   if (kIsWeb) return;
+  //   var fcmToken = await FirebaseMessaging.instance.getToken();
+  //   FirebaseMessaging.instance.getInitialMessage().then((event) {
+  //     if (event != null) {
+  //       print("geetInitialMessage ${event.data}");
+  //     }
+  //   });
 
-    FirebaseMessaging.onMessage.listen((event) {
-      print("onMessage ${event.data}");
-      showAlert(event, context);
-    });
+  //   FirebaseMessaging.onMessage.listen((event) {
+  //     print("onMessage ${event.data}");
+  //     showAlert(event, context);
+  //   });
 
-    FirebaseMessaging.onMessageOpenedApp.listen((event) {
-      print("onMessageOpenApp ${event.data}");
-      showAlert(event, context);
-    });
+  //   FirebaseMessaging.onMessageOpenedApp.listen((event) {
+  //     print("onMessageOpenApp ${event.data}");
+  //     showAlert(event, context);
+  //   });
 
-    FirebaseMessaging.onBackgroundMessage((event) {
-      return showAlert(event, context);
-    });
-    await FirebaseMessaging.instance
-        .setForegroundNotificationPresentationOptions(
-      alert: true,
-      badge: true,
-      sound: true,
-    );
-  }
+  //   FirebaseMessaging.onBackgroundMessage((event) {
+  //     return showAlert(event, context);
+  //   });
+  //   await FirebaseMessaging.instance
+  //       .setForegroundNotificationPresentationOptions(
+  //     alert: true,
+  //     badge: true,
+  //     sound: true,
+  //   );
+  // }
 
-  Future<void> showAlert(RemoteMessage event, BuildContext context) async {
-    String capitalLetterName = event.data["vendorName"] ?? "";
-    //  DateTime timestamp = DateTime.parse(event.data['timestamp']);
+  // Future<void> showAlert(RemoteMessage event, BuildContext context) async {
+  //   String capitalLetterName = event.data["vendorName"] ?? "";
+  //   //  DateTime timestamp = DateTime.parse(event.data['timestamp']);
 
-    // // Check if more than one minute has passed since the timestamp
-    // if (DateTime.now().difference(timestamp).inMinutes > 1) {
-    //   print("More than one minute has passed. Do not show the notification.");
-    //   return;
-    // }
+  //   // // Check if more than one minute has passed since the timestamp
+  //   // if (DateTime.now().difference(timestamp).inMinutes > 1) {
+  //   //   print("More than one minute has passed. Do not show the notification.");
+  //   //   return;
+  //   // }
 
-    showModalBottomSheet(
-      isScrollControlled: true,
-      context: context,
-      backgroundColor: Colors.grey[200],
-      builder: (BuildContext context) {
-        return Container(
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-                SizedBox(
-                  height: 15.h,
-                  width: double.infinity,
-                ),
-                Container(
-                  height: 60.h,
-                  width: 60.w,
-                  decoration: BoxDecoration(
-                    image: DecorationImage(
-                      image: AssetImage("assets/images/play_store_2.png"),
-                      fit: BoxFit.cover,
-                    ),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                Text(
-                  "${event.notification?.title}",
-                  style:
-                      TextStyle(fontWeight: FontWeight.w600, fontSize: 18.sp),
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                Text(
-                  capitalLetterName.toUpperCase(),
-                  style: TextStyle(
-                      fontWeight: FontWeight.w500,
-                      fontSize: 16.sp,
-                      color: Constants().appColor),
-                ),
-                const SizedBox(height: 10),
-                Text(
-                  "INR ${event.data['amount']}",
-                  style:
-                      TextStyle(fontWeight: FontWeight.w500, fontSize: 16.sp),
-                ),
-                const SizedBox(height: 10),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Expanded(
-                        child: Container(
-                          height: 50,
-                          decoration: BoxDecoration(
-                              color: Colors.green,
-                              border: Border.all(color: Colors.green.shade900),
-                              borderRadius: BorderRadius.circular(10)),
-                          child: TextButton(
-                            onPressed: () {
-                              sendApprovalStatus(event.data["reqId"], true);
-                              Navigator.of(context).pop();
-                            },
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text(
-                                  "Approve",
-                                  style: TextStyle(color: Colors.white),
-                                ),
-                                const SizedBox(
-                                  width: 10,
-                                ),
-                                Icon(
-                                  Icons.done,
-                                  color: Colors.white,
-                                )
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(
-                        width: 10,
-                      ),
-                      Expanded(
-                        child: Container(
-                          height: 50,
-                          decoration: BoxDecoration(
-                              color: Colors.red,
-                              border: Border.all(color: Colors.red.shade900),
-                              borderRadius: BorderRadius.circular(10)),
-                          child: TextButton(
-                            onPressed: () {
-                              sendApprovalStatus(event.data["reqId"], false);
-                              Navigator.of(context).pop();
-                            },
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text(
-                                  "Reject",
-                                  style: TextStyle(color: Colors.white),
-                                ),
-                                const SizedBox(
-                                  width: 10,
-                                ),
-                                Icon(
-                                  Icons.close,
-                                  color: Colors.white,
-                                )
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-        );
-      },
-    );
-  }
+  //   showModalBottomSheet(
+  //     isScrollControlled: true,
+  //     context: context,
+  //     backgroundColor: Colors.grey[200],
+  //     builder: (BuildContext context) {
+  //       return Container(
+  //         child: SingleChildScrollView(
+  //           child: Column(
+  //             children: [
+  //               SizedBox(
+  //                 height: 15.h,
+  //                 width: double.infinity,
+  //               ),
+  //               Container(
+  //                 height: 60.h,
+  //                 width: 60.w,
+  //                 decoration: BoxDecoration(
+  //                   image: DecorationImage(
+  //                     image: AssetImage("assets/images/play_store_2.png"),
+  //                     fit: BoxFit.cover,
+  //                   ),
+  //                   borderRadius: BorderRadius.circular(8),
+  //                 ),
+  //               ),
+  //               const SizedBox(
+  //                 height: 10,
+  //               ),
+  //               Text(
+  //                 "${event.notification?.title}",
+  //                 style:
+  //                     TextStyle(fontWeight: FontWeight.w600, fontSize: 18.sp),
+  //               ),
+  //               const SizedBox(
+  //                 height: 10,
+  //               ),
+  //               Text(
+  //                 capitalLetterName.toUpperCase(),
+  //                 style: TextStyle(
+  //                     fontWeight: FontWeight.w500,
+  //                     fontSize: 16.sp,
+  //                     color: Constants().appColor),
+  //               ),
+  //               const SizedBox(height: 10),
+  //               Text(
+  //                 "INR ${event.data['amount']}",
+  //                 style:
+  //                     TextStyle(fontWeight: FontWeight.w500, fontSize: 16.sp),
+  //               ),
+  //               const SizedBox(height: 10),
+  //               Padding(
+  //                 padding: const EdgeInsets.all(8.0),
+  //                 child: Row(
+  //                   mainAxisAlignment: MainAxisAlignment.center,
+  //                   children: [
+  //                     Expanded(
+  //                       child: Container(
+  //                         height: 50,
+  //                         decoration: BoxDecoration(
+  //                             color: Colors.green,
+  //                             border: Border.all(color: Colors.green.shade900),
+  //                             borderRadius: BorderRadius.circular(10)),
+  //                         child: TextButton(
+  //                           onPressed: () {
+  //                             sendApprovalStatus(event.data["reqId"], true);
+  //                             Navigator.of(context).pop();
+  //                           },
+  //                           child: Row(
+  //                             mainAxisAlignment: MainAxisAlignment.center,
+  //                             children: [
+  //                               Text(
+  //                                 "Approve",
+  //                                 style: TextStyle(color: Colors.white),
+  //                               ),
+  //                               const SizedBox(
+  //                                 width: 10,
+  //                               ),
+  //                               Icon(
+  //                                 Icons.done,
+  //                                 color: Colors.white,
+  //                               )
+  //                             ],
+  //                           ),
+  //                         ),
+  //                       ),
+  //                     ),
+  //                     const SizedBox(
+  //                       width: 10,
+  //                     ),
+  //                     Expanded(
+  //                       child: Container(
+  //                         height: 50,
+  //                         decoration: BoxDecoration(
+  //                             color: Colors.red,
+  //                             border: Border.all(color: Colors.red.shade900),
+  //                             borderRadius: BorderRadius.circular(10)),
+  //                         child: TextButton(
+  //                           onPressed: () {
+  //                             sendApprovalStatus(event.data["reqId"], false);
+  //                             Navigator.of(context).pop();
+  //                           },
+  //                           child: Row(
+  //                             mainAxisAlignment: MainAxisAlignment.center,
+  //                             children: [
+  //                               Text(
+  //                                 "Reject",
+  //                                 style: TextStyle(color: Colors.white),
+  //                               ),
+  //                               const SizedBox(
+  //                                 width: 10,
+  //                               ),
+  //                               Icon(
+  //                                 Icons.close,
+  //                                 color: Colors.white,
+  //                               )
+  //                             ],
+  //                           ),
+  //                         ),
+  //                       ),
+  //                     ),
+  //                   ],
+  //                 ),
+  //               ),
+  //             ],
+  //           ),
+  //         ),
+  //       );
+  //     },
+  //   );
+  // }
 }

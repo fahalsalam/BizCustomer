@@ -103,15 +103,15 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   Navigator.pop(context);
                 },
               ),
-              ListTile(
-                leading: Icon(Icons.camera_alt),
-                title: Text('Take a photo'),
-                onTap: () {
-                  _pickImage(ImageSource.camera);
-                  // _cropImage(imgFile)
-                  Navigator.pop(context);
-                },
-              ),
+              // ListTile(
+              //   leading: Icon(Icons.camera_alt),
+              //   title: Text('Take a photo'),
+              //   onTap: () {
+              //     _pickImage(ImageSource.camera);
+              //     // _cropImage(imgFile)
+              //     Navigator.pop(context);
+              //   },
+              // ),
             ],
           ),
         );
@@ -350,16 +350,15 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   SizedBox(
                     height: 52,
                     child: TextFormField(
-                      
                       controller: _pinCodeController,
                       decoration: InputDecoration(
                         hintText: "Pin code",
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
                         ),
-                   
-                      ),keyboardType: TextInputType.number,
-                            inputFormatters: [
+                      ),
+                      keyboardType: TextInputType.number,
+                      inputFormatters: [
                         FilteringTextInputFormatter.allow(
                             RegExp(r'[0-9]')), // Only allow numeric characters
                       ],

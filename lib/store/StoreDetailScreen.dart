@@ -8,6 +8,7 @@ import 'package:flutter_phone_direct_caller/flutter_phone_direct_caller.dart';
 import 'package:full_screen_image/full_screen_image.dart';
 import 'package:provider/provider.dart';
 import 'package:reward_hub_customer/Utils/SharedPrefrence.dart';
+import 'package:reward_hub_customer/Utils/phone_dialer.dart';
 import 'package:reward_hub_customer/provider/user_data_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -235,12 +236,16 @@ class StoreDetailScreenState extends State<StoreDetailScreen> {
               alignment: Alignment.centerRight,
               child: ElevatedButton.icon(
                 onPressed: () {
-                  _makePhoneCall1(storeList is StoreModel
-                      ? storeList.mobileNumber ?? ""
-                      : (storeList is filter.Vendor
-                          ? storeList.vendorRegisteredMobileNumber.toString() ??
-                              ""
-                          : ''));
+                  makePhoneCall(
+                    context, // Pass BuildContext here
+                    storeList is StoreModel
+                        ? storeList.mobileNumber ?? ""
+                        : (storeList is filter.Vendor
+                            ? storeList.vendorRegisteredMobileNumber
+                                    .toString() ??
+                                ""
+                            : ''),
+                  );
                 },
                 icon: Icon(
                   Icons.call,
@@ -443,9 +448,6 @@ class StoreDetailScreenState extends State<StoreDetailScreen> {
   }
 }
 
-Future<void> _makePhoneCall1(String phoneNumber) async {
-  bool? res = await FlutterPhoneDirectCaller.callNumber(phoneNumber);
-  if (!res!) {
-    throw 'Could not launch $phoneNumber';
-  }
+Future<void> makePhoneCall(BuildContext context, String phoneNumber) async {
+  await PhoneDialer.makeCall(context, phoneNumber);
 }

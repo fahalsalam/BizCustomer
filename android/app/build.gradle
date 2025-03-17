@@ -59,11 +59,10 @@ android {
         release {
             keyAlias 'BizCustomerUpload'
             keyPassword 'Sacro@Bizcustomer#486'
-            storeFile file('/Users/apple/Desktop/FlutterApps/BizCustomer/bizCustomer.keystore')
+            storeFile file('/Users/apple/BizAtomApps/BizCustomer_Copy/bizCustomer.keystore')
             storePassword 'Sacro@Bizcustomer#486'
         }
     }
-
      buildTypes {
         release {
             signingConfig signingConfigs.release

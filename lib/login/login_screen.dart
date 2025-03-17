@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:io';
-
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -19,7 +18,6 @@ import 'package:reward_hub_customer/Utils/urls.dart';
 import 'package:reward_hub_customer/login/api_service.dart';
 import 'package:reward_hub_customer/register/register_screen.dart';
 import 'package:url_launcher/url_launcher.dart';
-
 import '../Utils/CustomDialogBox.dart';
 import '../store/model/user_model.dart';
 

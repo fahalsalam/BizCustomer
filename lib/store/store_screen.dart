@@ -248,6 +248,14 @@ class StoreScreenState extends State<StoreScreen>
                         child: SizedBox(
                           height: 50.h,
                           child: TextFormField(
+                            onFieldSubmitted: (value) {
+                              resetPageNo();
+                              onSearchIconClicked();
+                              _searchFocusNode.unfocus();
+                              if (_textEditingController.text.isEmpty) {
+                                filterVendorModel.data = [];
+                              }
+                            },
                             focusNode: _searchFocusNode,
                             textInputAction: TextInputAction.search,
                             onChanged: onSearchTextChanged,
@@ -285,38 +293,38 @@ class StoreScreenState extends State<StoreScreen>
                           ),
                         ),
                       ),
-                      const SizedBox(width: 5),
-                      _tabController.index == 1
-                          ? InkWell(
-                              onTap: _navigateToAdvancedSearch,
-                              // onTap: () {
-                              //   showModalBottomSheet(
-                              //       isScrollControlled: true,
-                              //       context: context,
-                              //       MaterialPageRoute(
-                              //           builder: (context) =>
-                              //               AdvancedSearchFilterScreen())
-                              //       // builder: (BuildContext context) {
-                              //       //   return AdvancedSearchFilterScreen();
-                              //       //   // return BottomSheetContent(
-                              //       //   //     storesList: storesList);
-                              //       // },
-                              //       );
-                              // },
-                              child: Container(
-                                height: 52.h,
-                                width: 52.w,
-                                decoration: BoxDecoration(
-                                    border:
-                                        Border.all(color: Constants().appColor),
-                                    borderRadius: BorderRadius.circular(8)),
-                                child: Icon(
-                                  Icons.filter_alt_outlined,
-                                  size: 35.sp,
-                                ),
-                              ),
-                            )
-                          : const SizedBox()
+                      // const SizedBox(width: 0),
+                      // _tabController.index == 1
+                      //     ? InkWell(
+                      //         onTap: _navigateToAdvancedSearch,
+                      //         // onTap: () {
+                      //         //   showModalBottomSheet(
+                      //         //       isScrollControlled: true,
+                      //         //       context: context,
+                      //         //       MaterialPageRoute(
+                      //         //           builder: (context) =>
+                      //         //               AdvancedSearchFilterScreen())
+                      //         //       // builder: (BuildContext context) {
+                      //         //       //   return AdvancedSearchFilterScreen();
+                      //         //       //   // return BottomSheetContent(
+                      //         //       //   //     storesList: storesList);
+                      //         //       // },
+                      //         //       );
+                      //         // },
+                      //         child: Container(
+                      //           height: 52.h,
+                      //           width: 52.w,
+                      //           decoration: BoxDecoration(
+                      //               border:
+                      //                   Border.all(color: Constants().appColor),
+                      //               borderRadius: BorderRadius.circular(8)),
+                      //           child: Icon(
+                      //             Icons.filter_alt_outlined,
+                      //             size: 35.sp,
+                      //           ),
+                      //         ),
+                      //       )
+                      //     : const SizedBox()
                     ],
                   ),
                 ),
@@ -493,7 +501,7 @@ class StoreScreenState extends State<StoreScreen>
     List<filter.Vendor> filteredVendors = filterVendorModel.data ?? [];
     if (_searchQuery.isNotEmpty && filteredVendors.isEmpty) {
       return Center(
-        child: Text('No Stores found'),
+        child: Text('Tap to search'),
       );
     }
     return GridView.builder(

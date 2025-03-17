@@ -1,6 +1,6 @@
 class Urls {
   //static const baseUrl = "http://143.110.181.12:7070/api/";
-  static const baseUrl = "https://sacrosys.net:6662/api/";
+  static const baseUrl = "https://sacrosys.net:6664/api/";
   static const baseUrl1 = "https://sacrosys.net:6664/api/";
 
   static const deviceInfoPostAPI = "${baseUrl}7263/postDeviceInfo";
@@ -32,4 +32,6 @@ class Urls {
   static const getAppConfig = "${baseUrl}7263/getAppConfig";
   static const getMastersCombo = "${baseUrl}7263/getMastersComboValues";
   static const getMastersFilterCombo = "${baseUrl}7263/getMastersComboFilter";
+  static const postAccountDeactivate =
+      "${baseUrl}2878/customerAccountDeactivation";
 }

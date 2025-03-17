@@ -1,8 +1,5 @@
 import 'dart:convert';
-import 'dart:developer';
 import 'dart:io';
-
-import 'package:animated_notch_bottom_bar/animated_notch_bottom_bar/animated_notch_bottom_bar.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -10,11 +7,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:reward_hub_customer/Utils/DeviceInfo.dart';
 import 'package:reward_hub_customer/Utils/constants.dart';
-import 'package:reward_hub_customer/search/search_screen.dart';
 import 'package:reward_hub_customer/search/search_screen2.dart';
 import 'package:reward_hub_customer/store/store_screen.dart';
 import 'package:reward_hub_customer/utils/SharedPrefrence.dart';
-import 'package:reward_hub_customer/wallet/wallet_screen.dart';
 import 'package:reward_hub_customer/wallet/wallet_screen2.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:url_launcher/url_launcher.dart';

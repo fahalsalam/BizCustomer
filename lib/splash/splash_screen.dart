@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -11,9 +10,7 @@ import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
 import 'package:reward_hub_customer/Utils/DeviceInfo.dart';
 import 'package:reward_hub_customer/Utils/urls.dart';
-import 'package:reward_hub_customer/firebase/pushnotification.dart';
 import 'package:reward_hub_customer/provider/user_data_provider.dart';
-
 import '../Utils/SharedPrefrence.dart';
 import '../Utils/constants.dart';
 import '../bottom_navigation/bottom_navigation_screen.dart';
